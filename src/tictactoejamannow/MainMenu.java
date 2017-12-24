@@ -1,7 +1,6 @@
 package tictactoejamannow;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -9,15 +8,22 @@ import javax.swing.JLabel;
 
 public class MainMenu extends JFrame {
     
+    private static MainMenu instance = null;
+    
     private JLabel titleLabel1;
     private JLabel titleLabel2;
     private JButton singleButton;
     private JButton multiLocalButton;
     private JButton multiInterlocalButton;
     
-    public MainMenu() {
+    private MainMenu() {
         super("[Main Menu] Tic Tac Toe Jaman Now");
         initUI();
+    }
+    
+    public static MainMenu getInstance() {
+        if (instance == null) instance = new MainMenu();
+        return instance;
     }
     
     private void initUI() {
@@ -29,21 +35,23 @@ public class MainMenu extends JFrame {
         singleButton.setPreferredSize(new Dimension(250, 50));
         add(singleButton, BorderLayout.NORTH);
         singleButton.addActionListener((e) -> {
-            
+            new TicTacToeSingleController().startGame();
+            setVisible(false);
         });
         
         multiLocalButton = new JButton("Multiplayer (in one computer)");
         multiLocalButton.setPreferredSize(new Dimension(250, 50));
         add(multiLocalButton, BorderLayout.CENTER);
         multiLocalButton.addActionListener((e) -> {
-            
+            new TicTacToeMultiLocalController().startGame();
+            setVisible(false);
         });
         
         multiInterlocalButton = new JButton("Multiplayer (through the internet)");
         multiInterlocalButton.setPreferredSize(new Dimension(250, 50));
         add(multiInterlocalButton, BorderLayout.SOUTH);
         multiInterlocalButton.addActionListener((e) -> {
-            
+            setVisible(false);
         });
         
         pack();

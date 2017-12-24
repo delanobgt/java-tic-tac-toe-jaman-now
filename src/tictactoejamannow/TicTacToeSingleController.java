@@ -3,30 +3,25 @@ package tictactoejamannow;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
-public class TicTacToeMultiLocalController {
+public class TicTacToeSingleController {
     
     private TicTacToeView view = new TicTacToeView();
     private TicTacToeModel model = new TicTacToeModel();
     private String[] names;
     
-    public TicTacToeMultiLocalController() {
+    public TicTacToeSingleController() {
         initBackButtonListener();
         initRestartButtonListener();
         initButtonClickListener();
     }
     
     public final void startGame() {
-        String firstName = JOptionPane.showInputDialog(
+        String playerName = JOptionPane.showInputDialog(
                                         null, 
                                         "First Player Name:", 
                                         "Input Name", 
                                         JOptionPane.PLAIN_MESSAGE);
-        String secondName = JOptionPane.showInputDialog(
-                                        null, 
-                                        "Second Player Name:", 
-                                        "Input Name", 
-                                        JOptionPane.PLAIN_MESSAGE);
-        names = new String[] {firstName, secondName};
+        names = new String[] {playerName, "Bot"};
         updateTurnText();
         view.setVisible(true);
     }

@@ -53,6 +53,6 @@ public class SplashScreen extends JFrame {
     }
     
     private void showMainMenu() {
-        new MainMenu().setVisible(true);
+        MainMenu.getInstance().setVisible(true);
     }
 }
