@@ -1,4 +1,4 @@
-package tictactoejamannow;
+package network;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -44,6 +44,7 @@ public class Client {
     public void sendObject(Object x) {
         try {
            os.writeObject(x);
+           os.flush();
         } catch (Exception ex) {
 //            ex.printStackTrace();
         }

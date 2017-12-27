@@ -1,4 +1,4 @@
-package tictactoejamannow;
+package view;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -136,6 +136,13 @@ public class TicTacToeView extends JFrame {
         });
     }
 
+    @Override
+    public void setTitle(String title) {
+        SwingUtilities.invokeLater(() -> {
+            super.setTitle(title);
+        });
+    }
+    
     @Override
     public void setVisible(boolean bln) {
         SwingUtilities.invokeLater(() -> {

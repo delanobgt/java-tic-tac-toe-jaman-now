@@ -1,13 +1,18 @@
-package tictactoejamannow;
+package controller;
 
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import view.ConnectingFrame;
+import view.MainMenu;
+import network.Server;
+import model.TicTacToeModel;
+import view.TicTacToeView;
 
 public class TicTacToeMultiIntraLocalServerController {
     private TicTacToeView view = new TicTacToeView();
     private TicTacToeModel model = new TicTacToeModel();
-    private final Server server = new Server(9999);
+    private Server server = new Server(9999);
     private ConnectingFrame connFrame;
     private volatile boolean opponentThinking = false;
     private String[] names;
@@ -25,6 +30,7 @@ public class TicTacToeMultiIntraLocalServerController {
                                         "Input Name", 
                                         JOptionPane.PLAIN_MESSAGE);
         if (playerName == null || playerName.length() == 0) return;
+        view.setTitle("Player: "+playerName);
         MainMenu.getInstance().setVisible(false);
         
         SwingUtilities.invokeLater(() -> {
@@ -48,9 +54,7 @@ public class TicTacToeMultiIntraLocalServerController {
         });
         
         Thread thread = new Thread(() -> {
-            System.out.println("start listening");
             if(server.waitForConnection()){ //connection success
-                System.out.println("accepted");
                 server.sendObject(playerName);
                 names = new String[] {playerName, (String)server.readObject()};
                 SwingUtilities.invokeLater(() -> {
@@ -73,11 +77,18 @@ public class TicTacToeMultiIntraLocalServerController {
     
     private void initBackButtonListener() {
         view.addBackButtonListener((e) -> {
-            view.dispose();
-            view = null;
-            model = null;
-            MainMenu.getInstance().setVisible(true);
+            onClickBackButton();
         });
+    }
+    
+    private void onClickBackButton() {
+        view.dispose();
+        view = null;
+        model = null;
+        server.close();
+        connFrame.dispose();
+        connFrame = null;
+        MainMenu.getInstance().setVisible(true);        
     }
     
     private void initButtonClickListener() {
@@ -109,23 +120,30 @@ public class TicTacToeMultiIntraLocalServerController {
     }
     
     private void opponentPlays() {
-        opponentThinking = true;
-        int pos = (Integer)server.readObject();
-        opponentThinking = false;
-        if (model.checkWin() != model.UNKNOWN_YET ||
+        new Thread(() -> {
+            opponentThinking = true;
+            Integer pos = (Integer)server.readObject();
+            if (pos == null) {
+                onClickBackButton();
+                return;
+            }
+            opponentThinking = false;
+            
+            if (model.checkWin() != model.UNKNOWN_YET ||
                 model.checkDraw() ||
                 !model.isEmptyAt(pos)) return;
 
-        model.setMarkAt(pos);
-        view.setCircleMarkAt(pos);
-        updateTurnText();        
+            model.setMarkAt(pos);
+            view.setCrossMarkAt(pos);
+            updateTurnText();        
 
-        int status;
-        if ((status = model.checkWin()) != model.UNKNOWN_YET) {
-            view.setStatText(names[status]+" won!!");
-            view.markWinButtons(model.getWinSlots());
-        } else if (model.checkDraw()) 
-            view.setStatText("It's a tie");
+            int status;
+            if ((status = model.checkWin()) != model.UNKNOWN_YET) {
+                view.setStatText(names[status]+" won!!");
+                view.markWinButtons(model.getWinSlots());
+            } else if (model.checkDraw()) 
+                view.setStatText("It's a tie");
+        }).start();
     }
     
 }

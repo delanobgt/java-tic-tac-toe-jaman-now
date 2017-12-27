@@ -1,5 +1,9 @@
-package tictactoejamannow;
+package view;
 
+import controller.TicTacToeMultiIntraLocalClientController;
+import controller.TicTacToeMultiLocalController;
+import controller.TicTacToeSingleController;
+import controller.TicTacToeMultiIntraLocalServerController;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.Arrays;

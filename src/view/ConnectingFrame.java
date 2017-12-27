@@ -1,4 +1,4 @@
-package tictactoejamannow;
+package view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -6,7 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-class ConnectingFrame extends JFrame {
+public class ConnectingFrame extends JFrame {
     
     private JLabel msgLabel;
     private JButton btn;

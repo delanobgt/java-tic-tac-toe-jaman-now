@@ -1,4 +1,4 @@
-package tictactoejamannow;
+package view;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -6,6 +6,7 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import tool.Tool;
 
 public class SplashScreen extends JFrame {
     

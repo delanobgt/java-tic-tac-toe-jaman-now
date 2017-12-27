@@ -1,34 +1,35 @@
-package tictactoejamannow;
+package controller;
 
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
+import view.MainMenu;
+import model.TicTacToeBot;
+import model.TicTacToeModel;
+import view.TicTacToeView;
+import tool.Tool;
 
-public class TicTacToeMultiLocalController {
+public class TicTacToeSingleController {
     
     private TicTacToeView view = new TicTacToeView();
     private TicTacToeModel model = new TicTacToeModel();
+    private TicTacToeBot bot = new TicTacToeBot();
+    private volatile boolean botThinking = false;
     private String[] names;
     
-    public TicTacToeMultiLocalController() {
+    public TicTacToeSingleController() {
         initBackButtonListener();
         initRestartButtonListener();
         initButtonClickListener();
     }
     
     public final void startGame() {
-        String firstName = JOptionPane.showInputDialog(
+        String playerName = JOptionPane.showInputDialog(
                                         null, 
-                                        "First Player Name:", 
+                                        "Player Name:", 
                                         "Input Name", 
                                         JOptionPane.PLAIN_MESSAGE);
-        if (firstName == null || firstName.length() == 0) return;
-        String secondName = JOptionPane.showInputDialog(
-                                        null, 
-                                        "Second Player Name:", 
-                                        "Input Name", 
-                                        JOptionPane.PLAIN_MESSAGE);
-        if (secondName == null || secondName.length() == 0) return;
-        names = new String[] {firstName, secondName};
+        if (playerName == null || playerName.length() == 0) return;
+        names = new String[] {playerName, "Bot"};
         updateTurnText();
         MainMenu.getInstance().setVisible(false);
         view.setVisible(true);
@@ -47,6 +48,7 @@ public class TicTacToeMultiLocalController {
     
     private final void initRestartButtonListener() {
         view.addRestartButtonListener((e) -> {
+            botThinking = false;
             model = new TicTacToeModel();
             view.resetButtons();
             updateTurnText();
@@ -58,23 +60,47 @@ public class TicTacToeMultiLocalController {
         for (int i = 0; i < 9; i++) {
             final int pos = i;
             listeners[i] = (e) -> {
+                if (botThinking) return;
                 if (model.checkWin() != model.UNKNOWN_YET ||
                         model.checkDraw() ||
                         !model.isEmptyAt(pos)) return;
                 
                 model.setMarkAt(pos);
-                if (model.isCrossAt(pos)) view.setCrossMarkAt(pos);
-                else view.setCircleMarkAt(pos);
-                updateTurnText();
+                view.setCircleMarkAt(pos);
                 
-                int status;
-                if ((status = model.checkWin()) != model.UNKNOWN_YET) {
-                    view.setStatText(names[status]+" won!!");
-                    view.markWinButtons(model.getWinSlots());
-                } else if (model.checkDraw()) 
-                    view.setStatText("It's a tie");
+                updateTurnText();
+                checkEndOfTurnStatus();
+                
+                botPlays();
             };
         }
         view.addClickListenersToButtons(listeners);
+    }
+    
+    private void botPlays() {
+        new Thread(() -> {
+            botThinking = true;
+            Tool.sleep(500);
+            //bot's turn
+            if (model.checkWin() != model.UNKNOWN_YET ||
+                    model.checkDraw()) return;
+
+            int botPos = bot.getOptimalPosition(model.getSlots());
+            model.setMarkAt(botPos);
+            view.setCrossMarkAt(botPos);
+
+            updateTurnText();
+            checkEndOfTurnStatus();
+            botThinking = false;
+        }).start();
+    }
+    
+    private void checkEndOfTurnStatus() {
+        int status;
+        if ((status = model.checkWin()) != model.UNKNOWN_YET) {
+            view.setStatText(names[status]+" won!!");
+            view.markWinButtons(model.getWinSlots());
+        } else if (model.checkDraw()) 
+            view.setStatText("It's a tie");
     }
 }

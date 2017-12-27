@@ -1,4 +1,4 @@
-package tictactoejamannow;
+package tool;
 
 public class Tool {
     

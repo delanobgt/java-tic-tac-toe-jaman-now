@@ -1,6 +1,7 @@
 package tictactoejamannow;
 
 import javax.swing.SwingUtilities;
+import view.SplashScreen;
 
 public class TicTacToeJamanNow {
 

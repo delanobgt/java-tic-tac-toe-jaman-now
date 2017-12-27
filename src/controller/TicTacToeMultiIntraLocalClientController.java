@@ -1,20 +1,24 @@
-package tictactoejamannow;
+package controller;
 
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import network.Client;
+import view.MainMenu;
+import model.TicTacToeModel;
+import view.TicTacToeView;
 
 public class TicTacToeMultiIntraLocalClientController {
-    private final TicTacToeView view = new TicTacToeView();
+    private TicTacToeView view = new TicTacToeView();
     private TicTacToeModel model = new TicTacToeModel();
-    private final Client client = new Client();
+    private Client client = new Client();
     private volatile boolean opponentThinking = false;
     private String[] names;
     
     public TicTacToeMultiIntraLocalClientController() {
         initBackButtonListener();
-        initRestartButtonListener();
+        view.hideRestartButton();
         initButtonClickListener();
     }
     
@@ -25,6 +29,7 @@ public class TicTacToeMultiIntraLocalClientController {
                                         "Input Name", 
                                         JOptionPane.PLAIN_MESSAGE);
         if (playerName == null || playerName.length() == 0) return;
+        view.setTitle("Player: "+playerName);
         
         String address = JOptionPane.showInputDialog(
                 null, 
@@ -36,7 +41,6 @@ public class TicTacToeMultiIntraLocalClientController {
         MainMenu.getInstance().setVisible(false);
         
         String[] split = address.split(":");
-        System.out.println(Arrays.toString(split));
         String ip = split[0];
         int port = Integer.parseInt(split[1]);
         if (client.connect(ip, port)) {
@@ -56,9 +60,16 @@ public class TicTacToeMultiIntraLocalClientController {
     
     private void initBackButtonListener() {
         view.addBackButtonListener((e) -> {
-            view.dispose();
-            MainMenu.getInstance().setVisible(true);
+            onClickBackButton();
         });
+    }
+    
+    private void onClickBackButton () {
+        view.dispose();
+        view = null;
+        model = null;
+        client.close();
+        MainMenu.getInstance().setVisible(true);
     }
     
     private void initRestartButtonListener() {
@@ -98,22 +109,28 @@ public class TicTacToeMultiIntraLocalClientController {
     }
     
     private void opponentPlays() {
-        opponentThinking = true;
-        int pos = (Integer)client.readObject();
-        opponentThinking = false;
-        if (model.checkWin() != model.UNKNOWN_YET ||
-                model.checkDraw() ||
-                !model.isEmptyAt(pos)) return;
+        new Thread(() -> {
+           opponentThinking = true;
+            Integer pos = (Integer)client.readObject();
+            if (pos == null) {
+                onClickBackButton();
+                return;
+            }
+            opponentThinking = false;
+            if (model.checkWin() != model.UNKNOWN_YET ||
+                    model.checkDraw() ||
+                    !model.isEmptyAt(pos)) return;
 
-        model.setMarkAt(pos);
-        view.setCircleMarkAt(pos);
-        updateTurnText();        
+            model.setMarkAt(pos);
+            view.setCircleMarkAt(pos);
+            updateTurnText();        
 
-        int status;
-        if ((status = model.checkWin()) != model.UNKNOWN_YET) {
-            view.setStatText(names[status]+" won!!");
-            view.markWinButtons(model.getWinSlots());
-        } else if (model.checkDraw()) 
-            view.setStatText("It's a tie");
+            int status;
+            if ((status = model.checkWin()) != model.UNKNOWN_YET) {
+                view.setStatText(names[status]+" won!!");
+                view.markWinButtons(model.getWinSlots());
+            } else if (model.checkDraw()) 
+                view.setStatText("It's a tie"); 
+        }).start();
     }
 }
