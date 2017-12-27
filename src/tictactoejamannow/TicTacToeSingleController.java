@@ -20,10 +20,10 @@ public class TicTacToeSingleController {
     public final void startGame() {
         String playerName = JOptionPane.showInputDialog(
                                         null, 
-                                        "First Player Name:", 
+                                        "Player Name:", 
                                         "Input Name", 
                                         JOptionPane.PLAIN_MESSAGE);
-        if (playerName == null) return;
+        if (playerName == null || playerName.length() == 0) return;
         names = new String[] {playerName, "Bot"};
         updateTurnText();
         MainMenu.getInstance().setVisible(false);

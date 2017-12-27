@@ -21,13 +21,13 @@ public class TicTacToeMultiLocalController {
                                         "First Player Name:", 
                                         "Input Name", 
                                         JOptionPane.PLAIN_MESSAGE);
-        if (firstName == null) return;
+        if (firstName == null || firstName.length() == 0) return;
         String secondName = JOptionPane.showInputDialog(
                                         null, 
                                         "Second Player Name:", 
                                         "Input Name", 
                                         JOptionPane.PLAIN_MESSAGE);
-        if (secondName == null) return;
+        if (secondName == null || secondName.length() == 0) return;
         names = new String[] {firstName, secondName};
         updateTurnText();
         MainMenu.getInstance().setVisible(false);

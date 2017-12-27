@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 public class TicTacToeView extends JFrame {
     
@@ -15,7 +16,7 @@ public class TicTacToeView extends JFrame {
     private JButton restartButton;
     
     public TicTacToeView() {
-        initUI();
+        initUI();    
     }
  
     private void initUI() {
@@ -69,11 +70,13 @@ public class TicTacToeView extends JFrame {
     }
     
     public void resetButtons() {
-        for (int i = 0; i < 9; i++) {
-            buttons[i].setText("");
-            buttons[i].setBackground(null);
-            buttons[i].setForeground(null);
-        }
+        SwingUtilities.invokeLater(() -> {
+            for (int i = 0; i < 9; i++) {
+                buttons[i].setText("");
+                buttons[i].setBackground(null);
+                buttons[i].setForeground(null);
+            }
+        });
     }
     
     public void addClickListenersToButtons(ActionListener[] listeners) {
@@ -86,7 +89,9 @@ public class TicTacToeView extends JFrame {
     }
     
     public void hideRestartButton() {
-        restartButton.setVisible(false);
+        SwingUtilities.invokeLater(() -> {
+            restartButton.setVisible(false);
+        });
     }
     
     public void addRestartButtonListener(ActionListener listener) {
@@ -104,22 +109,39 @@ public class TicTacToeView extends JFrame {
     }
     
     public void setCircleMarkAt(int pos) {
-        buttons[pos].setText("O");
-        buttons[pos].setForeground(Color.RED);
+        SwingUtilities.invokeLater(() -> {
+            buttons[pos].setText("O");
+            buttons[pos].setForeground(Color.RED);    
+        });
     }
     
     public void setCrossMarkAt(int pos) {
-        buttons[pos].setText("X");
-        buttons[pos].setForeground(Color.BLUE);
+        SwingUtilities.invokeLater(() -> {
+            buttons[pos].setText("X");
+            buttons[pos].setForeground(Color.BLUE);    
+        });
     }
     
     public void setStatText(String text) {
-        statLabel.setText(text);
+        SwingUtilities.invokeLater(() -> {
+            statLabel.setText(text);    
+        });
     }
     
     public void markWinButtons(int[] winSlots) {
-        for (int i = 0; i < winSlots.length; i++) {
-            buttons[winSlots[i]].setBackground(Color.GREEN);
-        }
+        SwingUtilities.invokeLater(() -> {
+            for (int i = 0; i < winSlots.length; i++) {
+                buttons[winSlots[i]].setBackground(Color.GREEN);
+            }
+        });
     }
+
+    @Override
+    public void setVisible(boolean bln) {
+        SwingUtilities.invokeLater(() -> {
+            super.setVisible(bln);    
+        });
+    }
+    
+    
 }
