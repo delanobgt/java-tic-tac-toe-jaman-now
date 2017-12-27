@@ -3,13 +3,12 @@ package tictactoejamannow;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
-public class TicTacToeMultiLocalController {
-    
+public class TicTacToeMultiIntraLocalController {
     private TicTacToeView view = new TicTacToeView();
     private TicTacToeModel model = new TicTacToeModel();
     private String[] names;
     
-    public TicTacToeMultiLocalController() {
+    public TicTacToeMultiIntraLocalController() {
         initBackButtonListener();
         initRestartButtonListener();
         initButtonClickListener();

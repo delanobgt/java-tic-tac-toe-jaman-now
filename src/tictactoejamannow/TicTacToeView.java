@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
 
 public class TicTacToeView extends JFrame {
     
@@ -21,9 +20,10 @@ public class TicTacToeView extends JFrame {
  
     private void initUI() {
         //window properties
+        setResizable(false);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(466, 538);
+        setSize(450, 530);
         setLocationRelativeTo(null);
         
         //statLabel properties
@@ -72,6 +72,7 @@ public class TicTacToeView extends JFrame {
         for (int i = 0; i < 9; i++) {
             buttons[i].setText("");
             buttons[i].setBackground(null);
+            buttons[i].setForeground(null);
         }
     }
     
@@ -82,6 +83,10 @@ public class TicTacToeView extends JFrame {
     
     public void addBackButtonListener(ActionListener listener) {
         backButton.addActionListener(listener);
+    }
+    
+    public void hideRestartButton() {
+        restartButton.setVisible(false);
     }
     
     public void addRestartButtonListener(ActionListener listener) {
@@ -100,10 +105,12 @@ public class TicTacToeView extends JFrame {
     
     public void setCircleMarkAt(int pos) {
         buttons[pos].setText("O");
+        buttons[pos].setForeground(Color.RED);
     }
     
     public void setCrossMarkAt(int pos) {
         buttons[pos].setText("X");
+        buttons[pos].setForeground(Color.BLUE);
     }
     
     public void setStatText(String text) {

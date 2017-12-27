@@ -36,7 +36,6 @@ public class MainMenu extends JFrame {
         add(singleButton, BorderLayout.NORTH);
         singleButton.addActionListener((e) -> {
             new TicTacToeSingleController().startGame();
-            setVisible(false);
         });
         
         multiLocalButton = new JButton("Multiplayer (in one computer)");
@@ -44,14 +43,13 @@ public class MainMenu extends JFrame {
         add(multiLocalButton, BorderLayout.CENTER);
         multiLocalButton.addActionListener((e) -> {
             new TicTacToeMultiLocalController().startGame();
-            setVisible(false);
         });
         
-        multiInterlocalButton = new JButton("Multiplayer (through the internet)");
+        multiInterlocalButton = new JButton("Multiplayer (using LAN)");
         multiInterlocalButton.setPreferredSize(new Dimension(250, 50));
         add(multiInterlocalButton, BorderLayout.SOUTH);
         multiInterlocalButton.addActionListener((e) -> {
-            setVisible(false);
+            new TicTacToeMultiIntraLocalController().startGame();
         });
         
         pack();

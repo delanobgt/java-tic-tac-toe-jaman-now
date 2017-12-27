@@ -100,4 +100,8 @@ public class TicTacToeModel {
         return true;
     }
     
+    public int[] getSlots() {
+        return this.slot;
+    }
+    
 }
